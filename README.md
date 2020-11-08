@@ -1,1 +1,1 @@
-# -goalNews-server
+# goalNews-server

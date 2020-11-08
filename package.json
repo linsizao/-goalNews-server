@@ -1,0 +1,28 @@
+{
+  "name": "goal-news-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linsizao/goalNews-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/linsizao/goalNews-server/issues"
+  },
+  "homepage": "https://github.com/linsizao/goalNews-server#readme",
+  "dependencies": {
+    "koa": "^2.13.0",
+    "koa-json": "^2.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
