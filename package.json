@@ -2,7 +2,7 @@
   "name": "goal-news-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js"
@@ -20,7 +20,10 @@
   "homepage": "https://github.com/linsizao/goalNews-server#readme",
   "dependencies": {
     "koa": "^2.13.0",
-    "koa-json": "^2.0.2"
+    "koa-bodyparser": "^4.3.0",
+    "koa-ejs": "^4.3.0",
+    "koa-json": "^2.0.2",
+    "koa-router": "^10.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
