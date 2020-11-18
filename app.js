@@ -4,6 +4,9 @@ const KoaRouter = require('koa-router')
 const path = require('path')
 const render = require('koa-ejs')
 const bodyParser = require('koa-bodyparser')
+const mongoose = require('mongoose')
+const { monogURL } = require('./config/keys') // 配置
+const users = require('./routes/api/users') // user router
 
 const app = new Koa()
 const router = new KoaRouter()
@@ -35,6 +38,19 @@ async function add(ctx) {
   const body = ctx.request.body
   console.log("req.body = "+JSON.stringify(body))
 }
+
+// 配置路由地址 localhost:3000/api/users
+router.use('/api/users', users)
+
+// 连接数据库
+mongoose
+  .connect(monogURL, { useUnifiedTopology: true })
+  .then(() => {
+    console.log('mongodb connectd...')
+  })
+  .catch(res => {
+    console.log(res)
+  })
 
 
 // app.use(async ctx => {
