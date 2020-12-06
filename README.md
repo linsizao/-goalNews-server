@@ -1,1 +1,5 @@
 # goalNews-server
+
+## bcryptjs
+
+## jsonwebtoken
