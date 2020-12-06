@@ -1,6 +1,7 @@
 const Router = require('koa-router')
 const User = require('../../models/User')
-const bcrypt = require('bcryptjs')
+// const bcrypt = require('bcryptjs')
+const { enbcrypt } = require('../../config/tools')
 const router = new Router()
 
 /**
@@ -23,13 +24,17 @@ router.post('/register', async ctx => {
     ctx.status = 500
     ctx.body = { email: '邮箱已被注册' }
   } else {
-    const newUser = new User({ name, email, password })
-    await bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(newUser.password, salt, function(err, hash) {
-        if(err) throw err
-        newUser.password = hash
-      })
+    const newUser = new User({
+      name,
+      email,
+      password: enbcrypt(password)
     })
+    // await bcrypt.genSalt(10, (err, salt) => {
+    //   bcrypt.hash(newUser.password, salt, function(err, hash) {
+    //     if(err) throw err
+    //     newUser.password = hash
+    //   })
+    // })
 
     // 入库
     await newUser
