@@ -3,7 +3,8 @@ const User = require('../../models/User')
 const { enbcrypt } = require('../../config/tools')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const { secretKey } = require('../../config/keys')
+const { secretOrKey } = require('../../config/keys')
+const passport = require('koa-passport')
 const router = new Router()
 
 /**
@@ -42,7 +43,7 @@ router.post('/register', async ctx => {
 })
 
 /**
- * @router POST api/login
+ * @router POST api/users/login
  * @desc 登陆接口
  */
 router.post('/login', async ctx => {
@@ -58,11 +59,11 @@ router.post('/login', async ctx => {
       // 返回 token
       const { name, email, _id } = user
       const payload = { name, email, _id }
-      const token = jwt.sign(payload, secretKey, { expiresIn: 3600} )
+      const token = jwt.sign(payload, secretOrKey, { expiresIn: 3600} )
       ctx.status = 200
       ctx.body = {
         msg: '登陆成功！',
-        token: `Beater${token}`
+        token: `Bearer ${token}`
       }
     } else {
       ctx.status = 400
@@ -71,6 +72,17 @@ router.post('/login', async ctx => {
   }
 })
 
-
+/**
+ * @router GET api/users/current
+ * @desc 获取用户信息
+ */
+router.get(
+  '/current',
+  passport.authenticate('jwt', { session: false }),
+  async ctx => {
+    const { _id, name, email } = ctx.state.user
+    ctx.body = { id: _id, name, email }
+  }
+)
 
 module.exports = router.routes()
