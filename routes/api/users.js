@@ -5,7 +5,9 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { secretOrKey } = require('../../config/keys')
 const passport = require('koa-passport')
+const validatorRegisterInput = require('../../validation/register') // 注册验证校验
 const router = new Router()
+
 
 /**
  * @router GET api/users/test
@@ -21,6 +23,13 @@ router.get('/test', async ctx => {
  * @desc 注册接口
  */
 router.post('/register', async ctx => {
+  const { errors, isValid } = validatorRegisterInput(ctx.request.body)
+  if( !isValid ) {
+    ctx.status = 400
+    ctx.body = errors
+    return
+  }
+
   const { name, email, password } = ctx.request.body
   const findResult = await User.find({ email })
   if(findResult.length > 0) {
