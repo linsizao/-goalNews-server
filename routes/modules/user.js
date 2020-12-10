@@ -6,8 +6,8 @@ const jwt = require('jsonwebtoken')
 const { secretOrKey } = require('../../config/keys')
 const passport = require('koa-passport')
 const validatorRegisterInput = require('../../validation/register') // 注册验证校验
+const validatorLoginInput = require('../../validation/login') // 登录验证校验
 const router = new Router()
-
 
 /**
  * @router GET api/users/test
@@ -56,6 +56,13 @@ router.post('/register', async ctx => {
  * @desc 登陆接口
  */
 router.post('/login', async ctx => {
+  const { errors, isValid } = validatorLoginInput(ctx.request.body)
+  if( !isValid ) {
+    ctx.status = 400
+    ctx.body = errors
+    return
+  }
+
   const { email, password } = ctx.request.body
   const findResult = await User.find({ email })
   const user = findResult[0]
