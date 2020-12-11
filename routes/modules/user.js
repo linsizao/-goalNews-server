@@ -1,7 +1,7 @@
 const Router = require('koa-router')
 const User = require('../../models/User')
-const { enbcrypt } = require('../../config/tools')
-const bcrypt = require('bcryptjs')
+const { enbcrypt } = require('../../config/tools') // 密码加密
+const bcrypt = require('bcryptjs') // 验证密码
 const jwt = require('jsonwebtoken')
 const { secretOrKey } = require('../../config/keys')
 const passport = require('koa-passport')
@@ -70,7 +70,7 @@ router.post('/login', async ctx => {
     ctx.status = 404
     ctx.body = { msg: '用户不存在！' }
   } else {
-    const result = await bcrypt.compareSync(password, user.password)
+    const result = await bcrypt.compareSync(password, user.password) // 验证密码
     if(result) {
       // 返回 token
       const { name, email, _id } = user
@@ -90,7 +90,7 @@ router.post('/login', async ctx => {
 
 /**
  * @router GET api/users/current
- * @desc 获取用户信息
+ * @desc 验证 token 接口
  */
 router.get(
   '/current',
