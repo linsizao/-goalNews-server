@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 // 实例化数据模板
 const MemberSchema = new Schema({
-  userId: {
+  user: {
     // 关联数据表
     type: String,
     ref: 'users',
@@ -11,7 +11,7 @@ const MemberSchema = new Schema({
   },
   handle: {
     type: String,
-    // required: true,
+    required: true,
     max: 40
   },
   signature: {

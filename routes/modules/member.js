@@ -46,9 +46,6 @@ router.post(
   '/update',
   passport.authenticate('jwt', { session: false }),
   async ctx => {
-    console.log(ctx)
-    console.log(ctx.state.user)
-    console.log(ctx.request.body)
     const { _id } = ctx.state.user
     const { handle, signature, sex, city, experience, education, social } = ctx.request.body
     const currentMember = {
@@ -63,12 +60,11 @@ router.post(
     }
 
     // 查询数据库
-    const member = await Member.find({userId: _id})
-    console.log(member)
+    const member = await Member.find({user: _id})
     if(member.length > 0) {
       // 执行更新
-      const memberUpdate = await Member.findByIdAndUpdate(
-        { userId:_id },
+      const memberUpdate = await Member.findOneAndUpdate(
+        { user: _id },
         { $set: currentMember },
         { new: true }
       )
@@ -81,6 +77,7 @@ router.post(
           ctx.body = res
         })
     }
+    
 
   }
 )
