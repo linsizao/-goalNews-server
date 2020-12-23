@@ -20,66 +20,33 @@ const MemberSchema = new Schema({
   },
   sex: {
     type: Number,
+    required: true,
   },
   city: {
     type: String
   },
-  experience: [
+  team: [
     {
-      current: {
-        type: Boolean,
-        default: true
-      },
-      title: {
+      teamName: {
         type: String,
         required: true
       },
-      company: {
+      teamId: {
         type: String,
         required: true
       },
-      location: {
-        type: String
-      },
-      from: {
-        type: String,
-        required: true
-      },
-      to: {
-        type: String
-      },
-      description: {
-        type: String
-      }
     }
   ],
-  education: [
+  star: [
     {
-      current: {
-        type: Boolean,
-        default: true
-      },
-      school: {
+      starName: {
         type: String,
         required: true
       },
-      degree: {
+      starId: {
         type: String,
         required: true
       },
-      fieldofstudy: {
-        type: String
-      },
-      from: {
-        type: String,
-        required: true
-      },
-      to: {
-        type: String
-      },
-      description: {
-        type: String
-      }
     }
   ],
   social: {

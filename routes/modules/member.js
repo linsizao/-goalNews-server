@@ -2,6 +2,8 @@ const Router = require('koa-router')
 const Member = require('../../models/Member')
 const passport = require('koa-passport')
 
+const validatorMenberInput = require('../../validation/member') // 修改用户信息验证
+
 const router = new Router()
 
 /**
@@ -21,12 +23,10 @@ router.get(
   '/current',
   passport.authenticate('jwt', { session: false }),
   async ctx => {
-    console.log(ctx.state.user)
-    const member = await Member.find({ userId: ctx.state.user._id }).populate(
+    const member = await Member.find({ user: ctx.state.user._id }).populate(
       'user',
       ['name', 'email']
     )
-    console.log(member)
 
     if(member.length > 0) {
       ctx.status = 200
@@ -39,6 +39,26 @@ router.get(
 )
 
 /**
+ * @router GET api/member/user?userId=aaaaaa
+ * @desc 根据用户 id 查询用户信息
+ */
+router.get('/user', async ctx => {
+  const userId = ctx.query.userId
+  const user = await Member.find({user: userId}).populate(
+    'user',
+    ['name', 'email']
+  )
+
+  if (user.length) {
+    ctx.status = 200
+    ctx.body = user
+  } else {
+    ctx.status = 404
+    ctx.body = { msg: '该由用户没有相关的个人信息！' }
+  }
+})
+
+/**
  * @router POST api/member/update
  * @desc 新增修改个人信息
  */
@@ -46,6 +66,13 @@ router.post(
   '/update',
   passport.authenticate('jwt', { session: false }),
   async ctx => {
+    const { errors, isValid } = validatorMenberInput(ctx.request.body)
+    if( !isValid ) {
+      ctx.status = 400
+      ctx.body = errors
+      return
+    }
+
     const { _id } = ctx.state.user
     const { handle, signature, sex, city, experience, education, social } = ctx.request.body
     const currentMember = {
@@ -77,9 +104,35 @@ router.post(
           ctx.body = res
         })
     }
-    
-
   }
 )
+
+/**
+ * @router POST api/member/addAttentionTeam
+ * @desc 设置关注球队接口
+ */
+router.post('/addAttentionTeam',
+  passport.authenticate('jwt', { session: false }),
+  async ctx => {
+    const { _id } = ctx.state.user
+    const { teamName, teamId } = ctx.request.body
+    const member = await Member.find({ user: _id })
+    if (member.length) {
+      const teamData = {
+        teamName,
+        teamId
+      }
+      const memberUpdate = await Member.findOneAndUpdate(
+        { user: _id },
+        { $push: { team: [teamData] } },
+        { new: true }
+      )
+      ctx.body = memberUpdate
+    } else {
+      ctx.status = 404
+      ctx.body = { msg: '找不到该用户' }
+    }
+  })
+
 
 module.exports = router.routes()
